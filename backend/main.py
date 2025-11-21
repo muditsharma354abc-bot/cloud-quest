@@ -1,3 +1,4 @@
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -19,11 +20,9 @@ app.add_middleware(
 
 # ------------- VERTEX AI / GEMINI CONFIG -------------
 
-# Default to your project; allow override via env if needed
 PROJECT_ID = os.getenv("GCP_PROJECT_ID", "lustrous-strand-473308-n1")
 LOCATION = os.getenv("GCP_LOCATION", "us-central1")
-
-MODEL_NAME = "gemini-2.5-flash"  # as requested
+MODEL_NAME = "gemini-2.5-flash"
 
 VERTEX_ENABLED = False
 try:
@@ -144,7 +143,6 @@ Return strict JSON with this exact shape:
         return generate_procedural_dungeon(request)
 
     try:
-        # using preview import path; adjust if your aiplatform version differs
         from vertexai.preview.generative_models import GenerativeModel
         import json
 
@@ -153,7 +151,6 @@ Return strict JSON with this exact shape:
 
         text = response.text.strip()
 
-        # Strip possible ```json ... ``` wrappers
         if text.startswith("```"):
             text = text.strip("`")
             if "\n" in text:
@@ -190,7 +187,6 @@ Return strict JSON with this exact shape:
         )
 
     except Exception:
-        # any AI error → safe procedural fallback
         return generate_procedural_dungeon(request)
 
 
@@ -231,3 +227,4 @@ if __name__ == "__main__":
     import uvicorn
 
     uvicorn.run(app, host="0.0.0.0", port=8080)
+EOF
